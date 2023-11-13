@@ -3,6 +3,7 @@ require("dotenv").config();
 const cors = require("cors");
 const connectToMongo = require("./config/db");
 const userRoute = require("./Routes/userRoute");
+const chatRoute = require("./Routes/chatRoute");
 const PORT = process.env.PORT;
 
 const app = express();
@@ -17,6 +18,9 @@ connectToMongo();
 
 // User Routes
 app.use("/api/v1/auth", userRoute);
+
+// Chat Routes
+app.use("/api/v1/chat", chatRoute);
 
 app.listen(PORT, (req, res) => {
   console.log(`Server Is Running On Port ${PORT}`);
