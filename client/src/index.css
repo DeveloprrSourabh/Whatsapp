@@ -1,0 +1,199 @@
+body,
+html {
+  margin: 0px !important;
+  overflow-x: hidden;
+}
+
+/**************  Register & Login Form **************/
+.form-cancel {
+  cursor: pointer;
+}
+h2.create-account {
+  font-size: 20px;
+  color: #333368;
+  line-height: 24px;
+}
+.register-input input {
+  padding: 5px 6px;
+  border-radius: 10px;
+  width: 100%;
+  background: rgb(255, 255, 255);
+  border: 1px solid rgb(226, 226, 238);
+  box-shadow: rgba(16, 24, 40, 0.05) 0px 1px 2px;
+}
+input {
+  outline: none !important;
+}
+div#register-form {
+  position: fixed;
+  top: 25%;
+  right: 50%;
+  background: #fff;
+  border-radius: 12px;
+  padding: 15px 48px 15px;
+  width: 40%;
+  left: 30%;
+  z-index: 999999;
+  font-size: 14px;
+}
+
+.register-input {
+  margin: 15px 0px;
+}
+.register-btn {
+  border-radius: 24px;
+  padding: 12px;
+  font-size: 12px;
+  border: 1px solid transparent;
+  width: 100%;
+  text-align: center;
+  background-color: #11daac;
+  color: rgb(0, 0, 66);
+  margin-bottom: 10px;
+}
+.have-account {
+  text-align: center;
+}
+.have-account a {
+  font-size: 11px;
+  line-height: 20px;
+  letter-spacing: -0.02em;
+  text-decoration-line: underline;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #000042;
+  cursor: pointer;
+  padding: 0px 4px;
+  font-weight: 600;
+}
+.have-account span {
+  font-size: 11px;
+  line-height: 20px;
+  letter-spacing: -0.02em;
+  text-decoration-line: underline;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #000042;
+  cursor: pointer;
+  padding: 0px 3px;
+}
+.formShow {
+  transition: all 0.5s;
+}
+div#root.formShow:before {
+  content: "";
+  background: #000;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  opacity: 0.3;
+}
+/**************  Register & Login Form End **************/
+
+/**************  Home Start **************/
+.header-img {
+  width: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  object-fit: contain;
+  height: 40px;
+}
+.header-img img {
+  object-fit: cover;
+}
+.main-header {
+  padding: 10px 16px;
+  background: #f0f2f5;
+}
+.header-bar {
+  cursor: pointer;
+}
+h2.number {
+  font-size: 17px;
+  color: #111b21;
+  font-weight: 400;
+}
+.all-users-box {
+  gap: 15px;
+  align-items: center;
+  cursor: pointer;
+  padding: 10px 16px 0px;
+}
+.all-users-box:hover {
+  background-color: #f0f2f5;
+}
+.myangle.text-end {
+  transition: all 0.3s;
+  transform: translateX(54px);
+  opacity: 0;
+}
+.all-users-box:hover .myangle.text-end {
+  transform: none;
+  opacity: 1;
+}
+.main-user .row {
+  padding: 10px 10px;
+}
+.usermesage {
+  color: #667781;
+  font-size: 14px;
+}
+.usermesage-sec {
+  color: #667781;
+  font-size: 13px;
+}
+.myangle {
+  color: #667781;
+}
+.header-img-second {
+  width: 61px;
+  border-radius: 50%;
+  display: block;
+  overflow: hidden;
+  object-fit: contain;
+  height: 53px;
+}
+.line {
+  border-bottom: 1px solid #e9edef;
+  padding-bottom: 10px;
+}
+.header-img-second img {
+  object-fit: cover;
+}
+.chat-head {
+  border-left: 1px solid gray;
+}
+.form-btn button {
+  width: 25px;
+  background: none;
+  border: none;
+  padding: inherit;
+}
+.form-btn div img {
+  filter: opacity(0.5) drop-shadow(0 0 #54656f);
+}
+.msg-input input {
+  padding: 9px 12px;
+  margin: 5px;
+  width: 90%;
+  background-color: #fff;
+  border: 1px solid #fff;
+  border-radius: 8px;
+}
+.send-msg {
+  padding: 5px 16px;
+  background: #e9edef;
+}
+.real-msg {
+  display: inline;
+  padding: 9px 7px;
+}
+.chat-msg {
+  background-color: #eae6df;
+  background-image: linear-gradient(180deg, #eae6df, #d1d7db);
+  padding: 25px;
+}
+/**************  Home End **************/
