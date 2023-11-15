@@ -16,8 +16,8 @@ const chatSlice = createSlice({
   },
 });
 
-export const getSendChat = createAsyncThunk("chat/send", async (id) => {
-  const res = await fetch(`${host}/api/v1/chat/send-chat/${id}`, {
+export const getSendChat = createAsyncThunk("chat/send", async () => {
+  const res = await fetch(`${host}/api/v1/chat/send-chat`, {
     method: "GET",
     headers: {
       Authorization: localStorage.getItem("token"),

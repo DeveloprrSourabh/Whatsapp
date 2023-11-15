@@ -82,6 +82,7 @@ exports.loginController = async (req, res) => {
         name: user.name,
         email: user.email,
         password: user.password,
+        id: user._id,
       },
       token,
     });
@@ -90,6 +91,65 @@ exports.loginController = async (req, res) => {
     return res.status(400).send({
       success: false,
       mesage: "Error While Login User",
+      error,
+    });
+  }
+};
+
+// Get All User
+exports.getAllUserController = async (req, res) => {
+  try {
+    const users = await User.find({ _id: { $ne: req.user._id } });
+    return res.status(200).send({
+      success: true,
+      message: "Getting All User",
+      users,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).send({
+      success: false,
+      message: "Error While Getting All User",
+      error,
+    });
+  }
+};
+
+// Update Profile
+exports.updateProfileController = async (req, res) => {
+  try {
+    let { names } = req.body;
+
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      { name: names },
+      { new: true }
+    );
+    return res.status(200).send({
+      success: true,
+      message: "Peofile Updated Successfully",
+      user,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).send({
+      success: false,
+      message: "Error While Updating Profile",
+      error,
+    });
+  }
+};
+
+// Update Photo
+exports.updatePhotoController = async (req, res) => {
+  try {
+const photo = req.
+
+  } catch (error) {
+    console.log(error);
+    return res.status(400).send({
+      success: false,
+      message: "Error While Updating Profile",
       error,
     });
   }

@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { useEffect } from "react";
 
 const host = "http://localhost:8080";
 const userSlice = createSlice({
@@ -13,7 +14,6 @@ const userSlice = createSlice({
       .addCase(StoreUser.fulfilled, (state, action) => {
         localStorage.setItem("auth", JSON.stringify(action.payload.user));
         localStorage.setItem("token", action.payload.token);
-        state.loginData = action.payload;
       })
       .addCase(getAllUser.fulfilled, (state, action) => {
         state.allUser = action.payload.users;

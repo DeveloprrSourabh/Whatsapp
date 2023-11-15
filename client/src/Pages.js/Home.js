@@ -5,12 +5,14 @@ import { getAllUser } from "../Slices/userSlice";
 import { getSendChat } from "../Slices/chatSlice";
 import moment from "moment";
 import Chat from "../components/Layout/Chat";
+import Profile from "./Profile";
 const host = "http://localhost:8080";
 
 const Home = () => {
   const dispatch = useDispatch();
   const [recId, setRecId] = useState("");
   const [user, setUser] = useState([]);
+  const [side, setSide] = useState(false);
   const data = useSelector((data) => {
     return data.user.loginData;
   });
@@ -34,10 +36,11 @@ const Home = () => {
     <Layout>
       <div className="home-page">
         <div className="row">
+          <Profile side={side} setSide={setSide} />
           <div className="col-sm-5 pe-0">
             <header className="masthead">
               <div className="main-header d-flex align-items-center justify-content-between">
-                <div className="header-img">
+                <div className="header-img" onClick={() => setSide(true)}>
                   <img
                     className="w-100 h-100"
                     src="/Images/pexels-photo-220453.webp"
@@ -58,9 +61,11 @@ const Home = () => {
                     return (
                       <>
                         <div
-                          className="all-users-box col-sm-12 d-flex "
+                          className={`all-users-box col-sm-12 d-flex ${
+                            u._id === recId ? "active" : ""
+                          }`}
                           onClick={() => {
-                            dispatch(getSendChat(u._id));
+                            dispatch(getSendChat());
                             setRecId(u._id);
                           }}
                         >
@@ -94,7 +99,20 @@ const Home = () => {
             </section>
           </div>
           <div className="col-sm-7 second-chat p-0">
-            <Chat recId={recId} />
+            {recId !== "" ? (
+              <Chat recId={recId} />
+            ) : (
+              <>
+                <div className="nothing">
+                  <div className="nothing-img w-50 mx-auto">
+                    <img src="/Images/download.png" alt="" className="w-100" />
+                  </div>
+                  <div className="text-center my-3 nothing-cation">
+                    <h2>Nothing to Show!</h2>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>

@@ -38,7 +38,7 @@ exports.getChatController = async (req, res) => {
     const chat = await Chat.find({
       senderId: req.user._id,
       receiverId: req.params.id,
-    });
+    }).sort({ createdAt: 1 });
     return res.status(200).send({
       success: true,
       message: "Getting Sending Message",
@@ -53,16 +53,36 @@ exports.getChatController = async (req, res) => {
     });
   }
 };
+
 // Get Receving Chat
 exports.getRecChatController = async (req, res) => {
   try {
     const chat = await Chat.find({
       senderId: req.params.id,
       receiverId: req.user._id,
-    });
+    }).sort({ createdAt: -1 });
     return res.status(200).send({
       success: true,
       message: "Getting Receving Message",
+      chat,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).send({
+      success: false,
+      message: "Error While Getting Chat",
+      error,
+    });
+  }
+};
+
+// Get Sending Chat
+exports.getChatController = async (req, res) => {
+  try {
+    const chat = await Chat.find({}).sort({ createdAt: 1 });
+    return res.status(200).send({
+      success: true,
+      message: "Getting Sending Message",
       chat,
     });
   } catch (error) {

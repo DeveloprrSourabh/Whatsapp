@@ -12,7 +12,7 @@ const router = express.Router();
 router.post("/create-chat", requireSign, createChatController);
 
 // GET SENDING MESSAGE || METHOD GET
-router.get("/send-chat/:id", requireSign, getChatController);
+router.get("/send-chat", requireSign, getChatController);
 
 // GET RECEVING MESSAGE || METHOD GET
 router.get("/receive-chat/:id", requireSign, getRecChatController);
