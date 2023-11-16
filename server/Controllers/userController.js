@@ -1,6 +1,7 @@
 const { hashPassword, compPassword } = require("../Helpers/authHelper");
 const User = require("../Models/userModel");
 const jwt = require("jsonwebtoken");
+const fs = require("fs");
 
 exports.registerController = async (req, res) => {
   try {
@@ -127,7 +128,7 @@ exports.updateProfileController = async (req, res) => {
     );
     return res.status(200).send({
       success: true,
-      message: "Peofile Updated Successfully",
+      message: "Profile Updated Successfully",
       user,
     });
   } catch (error) {
@@ -143,13 +144,69 @@ exports.updateProfileController = async (req, res) => {
 // Update Photo
 exports.updatePhotoController = async (req, res) => {
   try {
-const photo = req.
+    const { photo } = req.files;
 
+    let user = await User.findById(req.params.id);
+
+    if (!user.photo) {
+      if (photo) {
+        user.photo.data = fs.readFileSync(photo.path);
+        user.photo.contentType = photo.type;
+      }
+      user = await User.findByIdAndUpdate(
+        req.params.id,
+        { $push: { photo } },
+        { new: true }
+      );
+      if (photo) {
+        user.photo.data = fs.readFileSync(photo.path);
+        user.photo.contentType = photo.type;
+      }
+      await user.save();
+    } else {
+      if (photo) {
+        user.photo.data = fs.readFileSync(photo.path);
+        user.photo.contentType = photo.type;
+      }
+      user = await User.findByIdAndUpdate(
+        req.params.id,
+        { photo },
+        { new: true }
+      );
+      if (photo) {
+        user.photo.data = fs.readFileSync(photo.path);
+        user.photo.contentType = photo.type;
+      }
+      await user.save();
+    }
+    return res.status(200).send({
+      success: true,
+      message: "Photo Updated Successfully",
+      user,
+    });
   } catch (error) {
     console.log(error);
     return res.status(400).send({
       success: false,
       message: "Error While Updating Profile",
+      error,
+    });
+  }
+};
+
+// Get Profile Photo
+exports.getPhotoController = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).select("photo");
+    if (user.photo.data) {
+      res.set("Content-type", user.photo.contentType);
+      return res.status(200).send(user.photo.data);
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(400).send({
+      success: false,
+      message: "Error While Getting Profie Photo",
       error,
     });
   }

@@ -1,7 +1,6 @@
-import React, { useState } from "react";
-import useAuth from "../Hooks/Auth";
-import { set } from "mongoose";
+import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import axios from "axios";
 const host = "http://localhost:8080";
 
 const Profile = ({ side, setSide }) => {
@@ -12,7 +11,19 @@ const Profile = ({ side, setSide }) => {
   const [names, setNames] = useState(firstname);
   const [photo, setPhoto] = useState("");
   const [show, setShow] = useState(false);
-
+  // Get Profile Photo
+  const pic = async () => {
+    try {
+      const res = await fetch(`${host}/api/v1/auth/get-photo/${id}`);
+      const data = await res.json();
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    pic();
+  }, []);
   const handleSubmit = async (e) => {
     e.preventDefault();
     setShow(false);
@@ -31,6 +42,31 @@ const Profile = ({ side, setSide }) => {
         user = JSON.parse(user);
         user.name = names;
         localStorage.setItem("auth", JSON.stringify(user));
+        toast.success(data.message);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  //   Photo Update
+  const handlePhoto = async (e) => {
+    e.preventDefault();
+    try {
+      const photoData = new FormData();
+      photo && photoData.append("photo", photo);
+      const { data } = await axios.post(
+        `${host}/api/v1/auth/update-photo/${id}`,
+        photoData,
+        {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+          },
+        }
+      );
+      if (data.success) {
         toast.success(data.message);
       } else {
         toast.error(data.message);
@@ -63,25 +99,36 @@ const Profile = ({ side, setSide }) => {
               />
             ) : (
               <img
-                src="/Images/pexels-photo-220453.webp"
+                src={`${host}/api/v1/auth/get-photo/${id}`}
                 alt=""
                 className=" w-100 h-100"
               />
             )}
           </div>
-          <label className="change-profile-photo" htmlFor="photo">
-            <input
-              hidden
-              name="photo"
-              onChange={(e) => setPhoto(e.target.files[0])}
-              type="file"
-              id="photo"
-            />
-            <h2>
-              Change
-              <br /> Profile Photo
-            </h2>
-          </label>
+          <form className="change-profile-photo" onSubmit={handlePhoto}>
+            <label htmlFor="photo">
+              <input
+                hidden
+                name="photo"
+                accept="image/*"
+                onChange={(e) => {
+                  setPhoto(e.target.files[0]);
+                  setTimeout(() => {
+                    document.getElementById("photoForm").click();
+                  }, 1000);
+                }}
+                type="file"
+                id="photo"
+              />
+              <h2>
+                Change
+                <br /> Profile Photo
+              </h2>
+            </label>
+            <button className="d-none hidden" id="photoForm">
+              upload
+            </button>
+          </form>
         </div>
         <div className="profile-name">
           <form onSubmit={handleSubmit}>

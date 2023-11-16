@@ -345,4 +345,11 @@ h2.number {
   margin: 4px 20px 28px 30px;
   font-size: 16px;
 }
+.change-profile-photo h2 {
+  cursor: pointer;
+}
+p,
+h2 {
+  margin-bottom: 0px;
+}
 /**************  Home End **************/
