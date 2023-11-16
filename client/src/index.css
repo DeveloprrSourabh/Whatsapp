@@ -198,6 +198,7 @@ h2.number {
   z-index: 99999;
 }
 .real-msg {
+  overflow: hidden;
   position: relative;
   display: inline-block;
   padding: 9px 7px;
@@ -205,7 +206,12 @@ h2.number {
   font-size: 14px;
   border-radius: 10px;
 }
+/* .mymsg {
+  width: fit-content;
+  position: relative;
+} */
 .unreal-msg {
+  overflow: hidden;
   position: relative;
   display: inline-block;
   padding: 9px 7px;
@@ -351,5 +357,44 @@ h2.number {
 p,
 h2 {
   margin-bottom: 0px;
+}
+.real-msg:hover #angleId {
+  transform: none;
+  opacity: 1;
+}
+#angleId {
+  transition: all 0.2s;
+  border-radius: 8px;
+  transform: translateX(14px);
+  position: absolute;
+  right: 0;
+  top: 17px;
+  background: #fff;
+  padding: 0px 10px;
+}
+.option-ul {
+  list-style: none;
+  margin: 0px;
+  padding: 0px;
+}
+.chat-option {
+  position: absolute;
+  width: fit-content;
+  font-size: 11px;
+  /* right: -88px; */
+  left: 44px;
+  z-index: 99;
+  background: #fff;
+  border-radius: 2px;
+  top: 43px;
+}
+.single-option {
+  display: flex;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 11px 58px 11px 24px;
+}
+.single-option:hover {
+  background-color: #00000009;
 }
 /**************  Home End **************/

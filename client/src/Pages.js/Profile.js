@@ -11,19 +11,7 @@ const Profile = ({ side, setSide }) => {
   const [names, setNames] = useState(firstname);
   const [photo, setPhoto] = useState("");
   const [show, setShow] = useState(false);
-  // Get Profile Photo
-  const pic = async () => {
-    try {
-      const res = await fetch(`${host}/api/v1/auth/get-photo/${id}`);
-      const data = await res.json();
-      console.log(data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  useEffect(() => {
-    pic();
-  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setShow(false);
@@ -67,6 +55,7 @@ const Profile = ({ side, setSide }) => {
         }
       );
       if (data.success) {
+        localStorage.setItem("photo", URL.createObjectURL(photo));
         toast.success(data.message);
       } else {
         toast.error(data.message);
@@ -75,6 +64,7 @@ const Profile = ({ side, setSide }) => {
       console.log(error);
     }
   };
+
   return (
     <>
       <div className={`profile-page col-sm-5 px-0 ${side ? "active" : ""}`}>

@@ -94,3 +94,22 @@ exports.getChatController = async (req, res) => {
     });
   }
 };
+
+// Delete Chat
+exports.deleteChatController = async (req, res) => {
+  try {
+    const chat = await Chat.findByIdAndDelete(req.params.id);
+    return res.status(200).send({
+      success: true,
+      message: "Message Deleted Successfully",
+      chat,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).send({
+      success: false,
+      message: "Error While Deleteing Chat",
+      error,
+    });
+  }
+};

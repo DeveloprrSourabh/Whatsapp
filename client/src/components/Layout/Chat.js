@@ -10,6 +10,7 @@ const host = "http://localhost:8080";
 const Chat = ({ recId }) => {
   const auth = useAuth();
   const [message, setMessage] = useState("");
+  const [show, setShow] = useState("");
   const dispatch = useDispatch();
   const sendChat = useSelector((item) => {
     return item.chat.sendMessage;
@@ -44,6 +45,27 @@ const Chat = ({ recId }) => {
     setMessage(e.target.value);
   };
 
+  // Delete Chat
+  const handleDelete = async (id) => {
+    try {
+      setShow("");
+      const res = await fetch(`${host}/api/v1/chat/delete-chat/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      });
+      const data = await res.json();
+      if (data.success) {
+        dispatch(getSendChat());
+        toast.success(data.message);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <>
       <main className="main-chating">
@@ -67,16 +89,16 @@ const Chat = ({ recId }) => {
           <div className="chat-msg">
             {sendChat?.map((c, i, arr) => {
               return (
-                <div className="main-msg my-3">
+                <div className="main-msg position-relative my-3">
                   <div
                     id={`${sendChat.length - 1 === i ? "lastele" : ""}`}
                     className="mymsg"
                   >
                     {auth.id &&
                     recId &&
-                    c.senderId === auth.id &&
-                    c.receiverId === recId ? (
-                      <div className="sender w-100 ms-auto">
+                    c.receiverId === recId &&
+                    c.senderId === auth.id ? (
+                      <div className="sender text-end w-100 ms-auto">
                         <p className="m-0 unreal-msg ms-auto">
                           {c.message}
                           <sub className=" ms-2 msg-time">
@@ -84,13 +106,44 @@ const Chat = ({ recId }) => {
                           </sub>
                         </p>
                       </div>
-                    ) : c.senderId !== auth.id && c.receiverId !== recId ? (
-                      <p className="m-0 real-msg ">
-                        {c.message}
-                        <sub className=" ms-2 msg-time">
-                          {moment(c.createdAt).format("LT")}
-                        </sub>
-                      </p>
+                    ) : c.senderId === recId && c.receiverId === auth.id ? (
+                      <>
+                        <p className="m-0 real-msg ">
+                          {c.message}
+                          <sub className=" ms-2 msg-time">
+                            {moment(c.createdAt).format("LT")}
+                          </sub>
+                          <div
+                            onClick={() => {
+                              show === c._id ? setShow("") : setShow(c._id);
+                            }}
+                            id="angleId"
+                            class="myangle text-end"
+                          >
+                            <i class="fa-solid fa-angle-down"></i>
+                          </div>
+                        </p>
+                        {show && show === c._id ? (
+                          <span className="chat-option">
+                            <div className="options">
+                              <ul className="option-ul">
+                                <li
+                                  onClick={() => {
+                                    handleDelete(c._id);
+                                  }}
+                                  className="option-list"
+                                >
+                                  <div className="single-option">
+                                    Delete Chat
+                                  </div>
+                                </li>
+                              </ul>
+                            </div>
+                          </span>
+                        ) : (
+                          ""
+                        )}
+                      </>
                     ) : (
                       ""
                     )}

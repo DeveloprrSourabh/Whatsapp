@@ -11,6 +11,7 @@ const host = "http://localhost:8080";
 const Home = () => {
   const dispatch = useDispatch();
   const [recId, setRecId] = useState("");
+  const [myimage, setMyimage] = useState("");
   const [user, setUser] = useState([]);
   const [side, setSide] = useState(false);
   const data = useSelector((data) => {
@@ -27,11 +28,26 @@ const Home = () => {
   };
   useEffect(() => {
     getUser();
-  }, []);
+  }, [side, setSide]);
   const alluser = useSelector((data) => {
     return data.user.allUser;
   });
-
+  let myname = localStorage.getItem("auth");
+  myname = JSON.parse(myname);
+  let firstname = myname.name;
+  let id = myname.id;
+  const getPic = async () => {
+    const data = await fetch(`${host}/api/v1/auth/get-photo/${id}`, {
+      method: "GET",
+    });
+    setMyimage(data.url);
+  };
+  useEffect(() => {
+    getPic();
+  }, []);
+  window.onload = () => {
+    localStorage.removeItem("photo");
+  };
   return (
     <Layout>
       <div className="home-page">
@@ -41,11 +57,19 @@ const Home = () => {
             <header className="masthead">
               <div className="main-header d-flex align-items-center justify-content-between">
                 <div className="header-img" onClick={() => setSide(true)}>
-                  <img
-                    className="w-100 h-100"
-                    src="/Images/pexels-photo-220453.webp"
-                    alt=""
-                  />
+                  {localStorage.getItem("photo") ? (
+                    <img
+                      src={localStorage.getItem("photo")}
+                      alt=""
+                      className=" w-100 h-100"
+                    />
+                  ) : (
+                    <img
+                      src={`${host}/api/v1/auth/get-photo/${id}`}
+                      alt=""
+                      className=" w-100 h-100"
+                    />
+                  )}
                 </div>
                 <div className="header-bar d-flex flex-direction-column">
                   <span className="bar">•</span>
@@ -71,9 +95,9 @@ const Home = () => {
                         >
                           <div className="header-img-second">
                             <img
-                              src="/Images/pexels-photo-220453.webp"
+                              src={`${host}/api/v1/auth/get-photo/${u._id}`}
                               alt=""
-                              className="w-100 h-100 pb-3"
+                              className=" w-100 h-100 pb-3"
                             />
                           </div>
                           <div className="line d-flex justify-content-between align-items-center w-100">
