@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -44,6 +44,9 @@ const Register = () => {
       console.log(error);
     }
   };
+  useEffect(() => {
+    localStorage.getItem("token") ? navigate("/") : <></>;
+  }, []);
   return (
     <Layout>
       <div id="register-form">

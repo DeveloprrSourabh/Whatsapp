@@ -11,6 +11,7 @@ const host = "http://localhost:8080";
 const Home = () => {
   const dispatch = useDispatch();
   const [recId, setRecId] = useState("");
+  const [recName, setRecName] = useState("");
   const [myimage, setMyimage] = useState("");
   const [user, setUser] = useState([]);
   const [side, setSide] = useState(false);
@@ -91,6 +92,7 @@ const Home = () => {
                           onClick={() => {
                             dispatch(getSendChat());
                             setRecId(u._id);
+                            setRecName(u.name);
                           }}
                         >
                           <div className="header-img-second">
@@ -124,7 +126,7 @@ const Home = () => {
           </div>
           <div className="col-sm-7 second-chat p-0">
             {recId !== "" ? (
-              <Chat recId={recId} />
+              <Chat recName={recName} recId={recId} />
             ) : (
               <>
                 <div className="nothing">

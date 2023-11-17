@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import Layout from "../../components/Layout/Layout";
@@ -40,6 +40,9 @@ const Register = () => {
       console.log(error);
     }
   };
+  useEffect(() => {
+    localStorage.getItem("token") ? navigate("/") : <></>;
+  }, []);
   return (
     <Layout>
       <div id="register-form">

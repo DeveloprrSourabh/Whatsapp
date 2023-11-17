@@ -7,7 +7,7 @@ import { getSendChat } from "../../Slices/chatSlice";
 import useAuth from "../../Hooks/Auth";
 
 const host = "http://localhost:8080";
-const Chat = ({ recId }) => {
+const Chat = ({ recId, recName }) => {
   const auth = useAuth();
   const [message, setMessage] = useState("");
   const [show, setShow] = useState("");
@@ -66,18 +66,37 @@ const Chat = ({ recId }) => {
       console.log(error);
     }
   };
+  console.log(sendChat);
   return (
     <>
       <main className="main-chating">
         <div className="single-chat">
           <header className="masthead chat-head">
             <div className="main-header pe-5 d-flex align-items-center justify-content-between">
-              <div className="header-img">
-                <img
-                  className="w-100 h-100"
-                  src="/Images/pexels-photo-220453.webp"
-                  alt=""
-                />
+              <div className="d-flex align-items-center">
+                <div className="header-img">
+                  {localStorage.getItem("photo") ? (
+                    <img
+                      src={localStorage.getItem("photo")}
+                      alt=""
+                      className=" w-100 h-100"
+                    />
+                  ) : (
+                    <img
+                      src={`${host}/api/v1/auth/get-photo/${recId}`}
+                      alt=""
+                      className=" w-100 h-100"
+                    />
+                  )}
+                </div>
+                <div className="ms-3 username">
+                  {" "}
+                  <span className="names">
+                    <i>
+                      <b>{recName}</b>
+                    </i>
+                  </span>
+                </div>
               </div>
               <div className="header-bar d-flex flex-direction-column">
                 <span className="bar">•</span>
@@ -96,19 +115,10 @@ const Chat = ({ recId }) => {
                   >
                     {auth.id &&
                     recId &&
-                    c.receiverId === recId &&
+                    c.receiverId._id === recId &&
                     c.senderId === auth.id ? (
                       <div className="sender text-end w-100 ms-auto">
                         <p className="m-0 unreal-msg ms-auto">
-                          {c.message}
-                          <sub className=" ms-2 msg-time">
-                            {moment(c.createdAt).format("LT")}
-                          </sub>
-                        </p>
-                      </div>
-                    ) : c.senderId === recId && c.receiverId === auth.id ? (
-                      <>
-                        <p className="m-0 real-msg ">
                           {c.message}
                           <sub className=" ms-2 msg-time">
                             {moment(c.createdAt).format("LT")}
@@ -122,6 +132,7 @@ const Chat = ({ recId }) => {
                           >
                             <i class="fa-solid fa-angle-down"></i>
                           </div>
+                          <sub className="ps-2 d-inline-block">✓</sub>
                         </p>
                         {show && show === c._id ? (
                           <span className="chat-option">
@@ -143,6 +154,15 @@ const Chat = ({ recId }) => {
                         ) : (
                           ""
                         )}
+                      </div>
+                    ) : c.senderId === recId && c.receiverId._id === auth.id ? (
+                      <>
+                        <p className="m-0 real-msg ">
+                          {c.message}
+                          <sub className=" ms-2 msg-time">
+                            {moment(c.createdAt).format("LT")}
+                          </sub>
+                        </p>
                       </>
                     ) : (
                       ""
