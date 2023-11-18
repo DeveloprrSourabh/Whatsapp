@@ -1,15 +1,18 @@
 import moment from "moment";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getSendChat } from "../../Slices/chatSlice";
 import useAuth from "../../Hooks/Auth";
 
 const host = "http://localhost:8080";
-const Chat = ({ recId, recName }) => {
+const Chat = ({ online, recId, recName }) => {
+  const navigate = useNavigate();
+  const scrollRef = useRef();
   const auth = useAuth();
   const [message, setMessage] = useState("");
+  const [status, setStatus] = useState(false);
   const [show, setShow] = useState("");
   const dispatch = useDispatch();
   const sendChat = useSelector((item) => {
@@ -31,6 +34,7 @@ const Chat = ({ recId, recName }) => {
       const data = await res.json();
       if (data.success) {
         dispatch(getSendChat());
+        navigate("#lastele");
         setMessage("");
         toast.success(data.message);
       } else {
@@ -66,7 +70,19 @@ const Chat = ({ recId, recName }) => {
       console.log(error);
     }
   };
-  console.log(sendChat);
+  useEffect(() => {
+    scrollRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
+  }, []);
+
+  useEffect(() => {
+    online?.map((user) => {
+      if (user._id === recId) {
+        if (user.online === true) {
+          setStatus(true);
+        }
+      }
+    });
+  }, [online]);
   return (
     <>
       <main className="main-chating">
@@ -90,12 +106,14 @@ const Chat = ({ recId, recName }) => {
                   )}
                 </div>
                 <div className="ms-3 username">
-                  {" "}
                   <span className="names">
                     <i>
                       <b>{recName}</b>
                     </i>
                   </span>
+                  <div className="msg-times">
+                    {status === true ? "Online" : "Ofline"}
+                  </div>
                 </div>
               </div>
               <div className="header-bar d-flex flex-direction-column">
@@ -108,67 +126,73 @@ const Chat = ({ recId, recName }) => {
           <div className="chat-msg">
             {sendChat?.map((c, i, arr) => {
               return (
-                <div className="main-msg position-relative my-3">
+                <>
                   <div
-                    id={`${sendChat.length - 1 === i ? "lastele" : ""}`}
-                    className="mymsg"
+                    ref={scrollRef}
+                    className="main-msg position-relative my-3"
                   >
-                    {auth.id &&
-                    recId &&
-                    c.receiverId._id === recId &&
-                    c.senderId === auth.id ? (
-                      <div className="sender text-end w-100 ms-auto">
-                        <p className="m-0 unreal-msg ms-auto">
-                          {c.message}
-                          <sub className=" ms-2 msg-time">
-                            {moment(c.createdAt).format("LT")}
-                          </sub>
-                          <div
-                            onClick={() => {
-                              show === c._id ? setShow("") : setShow(c._id);
-                            }}
-                            id="angleId"
-                            class="myangle text-end"
-                          >
-                            <i class="fa-solid fa-angle-down"></i>
-                          </div>
-                          <sub className="ps-2 d-inline-block">✓</sub>
-                        </p>
-                        {show && show === c._id ? (
-                          <span className="chat-option">
-                            <div className="options">
-                              <ul className="option-ul">
-                                <li
-                                  onClick={() => {
-                                    handleDelete(c._id);
-                                  }}
-                                  className="option-list"
-                                >
-                                  <div className="single-option">
-                                    Delete Chat
-                                  </div>
-                                </li>
-                              </ul>
+                    <div
+                      id={`${sendChat.length - 1 === i ? "lastele" : ""}`}
+                      className="mymsg"
+                    >
+                      {auth.id &&
+                      recId &&
+                      c.receiverId._id === recId &&
+                      c.senderId === auth.id ? (
+                        <div className="sender text-end w-100 ms-auto">
+                          <p className="m-0 unreal-msg ms-auto">
+                            {c.message}
+                            <sub className=" ms-2 msg-time">
+                              {moment(c.createdAt).format("LT")}
+                            </sub>
+                            <div
+                              onClick={() => {
+                                show === c._id ? setShow("") : setShow(c._id);
+                              }}
+                              id="angleId"
+                              class="myangle text-end"
+                            >
+                              <i class="fa-solid fa-angle-down"></i>
                             </div>
-                          </span>
-                        ) : (
-                          ""
-                        )}
-                      </div>
-                    ) : c.senderId === recId && c.receiverId._id === auth.id ? (
-                      <>
-                        <p className="m-0 real-msg ">
-                          {c.message}
-                          <sub className=" ms-2 msg-time">
-                            {moment(c.createdAt).format("LT")}
-                          </sub>
-                        </p>
-                      </>
-                    ) : (
-                      ""
-                    )}
+                            <sub className="ps-2 d-inline-block">✓</sub>
+                          </p>
+                          {show && show === c._id ? (
+                            <span className="chat-option">
+                              <div className="options">
+                                <ul className="option-ul">
+                                  <li
+                                    onClick={() => {
+                                      handleDelete(c._id);
+                                    }}
+                                    className="option-list"
+                                  >
+                                    <div className="single-option">
+                                      Delete Chat
+                                    </div>
+                                  </li>
+                                </ul>
+                              </div>
+                            </span>
+                          ) : (
+                            ""
+                          )}
+                        </div>
+                      ) : c.senderId === recId &&
+                        c.receiverId._id === auth.id ? (
+                        <>
+                          <p className="m-0 real-msg ">
+                            {c.message}
+                            <sub className=" ms-2 msg-time">
+                              {moment(c.createdAt).format("LT")}
+                            </sub>
+                          </p>
+                        </>
+                      ) : (
+                        ""
+                      )}
+                    </div>
                   </div>
-                </div>
+                </>
               );
             })}
           </div>

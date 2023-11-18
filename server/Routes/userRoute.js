@@ -7,6 +7,7 @@ const {
   updateProfileController,
   updatePhotoController,
   getPhotoController,
+  userLogoutController,
 } = require("../Controllers/userController");
 const { requireSign } = require("../Middlewares/authMiddleware");
 const router = express.Router();
@@ -33,5 +34,8 @@ router.post(
 
 // GET PROFILE PHOTO || METHOD GET
 router.get("/get-photo/:id", getPhotoController);
+
+// USER LOGOUT || METHOD POST
+router.post("/logout/:id", requireSign, userLogoutController);
 
 module.exports = router;

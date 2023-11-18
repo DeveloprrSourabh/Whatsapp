@@ -7,6 +7,11 @@ const store = configureStore({
     user: userSlice,
     chat: chatSlice,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      immutableCheck: false,
+      serializableCheck: false,
+    }),
 });
 
 export default store;

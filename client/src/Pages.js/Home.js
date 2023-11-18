@@ -6,14 +6,18 @@ import { getSendChat } from "../Slices/chatSlice";
 import moment from "moment";
 import Chat from "../components/Layout/Chat";
 import Profile from "./Profile";
+import { redirect, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 const host = "http://localhost:8080";
 
 const Home = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [recId, setRecId] = useState("");
   const [recName, setRecName] = useState("");
   const [myimage, setMyimage] = useState("");
   const [user, setUser] = useState([]);
+
   const [side, setSide] = useState(false);
   const data = useSelector((data) => {
     return data.user.loginData;
@@ -28,6 +32,9 @@ const Home = () => {
     }
   };
   useEffect(() => {
+    localStorage.getItem("token") ? <></> : redirect("/login");
+  }, []);
+  useEffect(() => {
     getUser();
   }, [side, setSide]);
   const alluser = useSelector((data) => {
@@ -37,6 +44,7 @@ const Home = () => {
   myname = JSON.parse(myname);
   let firstname = myname.name;
   let id = myname.id;
+  let online = myname.online;
   const getPic = async () => {
     const data = await fetch(`${host}/api/v1/auth/get-photo/${id}`, {
       method: "GET",
@@ -48,6 +56,33 @@ const Home = () => {
   }, []);
   window.onload = () => {
     localStorage.removeItem("photo");
+  };
+  useEffect(() => {
+    dispatch(getSendChat());
+  }, []);
+
+  // Logout User
+  const logout = async (id) => {
+    try {
+      const res = await fetch(`${host}/api/v1/auth/logout/${id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: localStorage.getItem("token"),
+        },
+      });
+      const data = await res.json();
+      if (data.success) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("auth");
+        toast.success(data.message);
+        navigate("/login");
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <Layout>
@@ -73,9 +108,22 @@ const Home = () => {
                   )}
                 </div>
                 <div className="header-bar d-flex flex-direction-column">
-                  <span className="bar">•</span>
-                  <span className="bar">•</span>
-                  <span className="bar">•</span>
+                  {localStorage.getItem("token") ? (
+                    <span
+                      onClick={() => {
+                        logout(id);
+                      }}
+                      className="bar"
+                    >
+                      Logout
+                    </span>
+                  ) : (
+                    <>
+                      <span className="bar">•</span>
+                      <span className="bar">•</span>
+                      <span className="bar">•</span>
+                    </>
+                  )}
                 </div>
               </div>
             </header>
@@ -90,9 +138,9 @@ const Home = () => {
                             u._id === recId ? "active" : ""
                           }`}
                           onClick={() => {
-                            dispatch(getSendChat());
                             setRecId(u._id);
                             setRecName(u.name);
+                            dispatch(getSendChat());
                           }}
                         >
                           <div className="header-img-second">
@@ -126,7 +174,7 @@ const Home = () => {
           </div>
           <div className="col-sm-7 second-chat p-0">
             {recId !== "" ? (
-              <Chat recName={recName} recId={recId} />
+              <Chat online={alluser} recName={recName} recId={recId} />
             ) : (
               <>
                 <div className="nothing">

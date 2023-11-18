@@ -100,7 +100,7 @@ const Profile = ({ side, setSide }) => {
               <input
                 hidden
                 name="photo"
-                accept="image/*"
+                // accept="image/*"
                 onChange={(e) => {
                   setPhoto(e.target.files[0]);
                   setTimeout(() => {

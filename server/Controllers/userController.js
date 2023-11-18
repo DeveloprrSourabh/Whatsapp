@@ -59,7 +59,7 @@ exports.loginController = async (req, res) => {
       return res.status(400).send({ message: "Password Is Required" });
     }
 
-    const user = await User.findOne({ email });
+    let user = await User.findOne({ email });
     if (!user) {
       return res.status(404).send({
         success: false,
@@ -76,6 +76,11 @@ exports.loginController = async (req, res) => {
 
     // Authentication Token
     const token = await jwt.sign({ _id: user._id }, process.env.SECRET_KEY);
+    user = await User.findByIdAndUpdate(
+      user._id,
+      { online: true },
+      { new: true }
+    );
     return res.status(200).send({
       success: true,
       message: "User Login Successfully",
@@ -84,6 +89,7 @@ exports.loginController = async (req, res) => {
         email: user.email,
         password: user.password,
         id: user._id,
+        online: user.online,
       },
       token,
     });
@@ -207,6 +213,28 @@ exports.getPhotoController = async (req, res) => {
     return res.status(400).send({
       success: false,
       message: "Error While Getting Profie Photo",
+      error,
+    });
+  }
+};
+
+// User Logout
+exports.userLogoutController = async (req, res) => {
+  try {
+    let user = await User.findByIdAndUpdate(
+      req.params.id,
+      { online: false },
+      { new: true }
+    );
+    return res.status(200).send({
+      success: true,
+      message: "User  LOgout Successfully",
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).send({
+      success: false,
+      message: "Error While Logout User",
       error,
     });
   }

@@ -15,6 +15,11 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    online: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
     photo: {
       data: Buffer,
       contentType: String,
